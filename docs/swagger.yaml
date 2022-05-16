@@ -1,0 +1,35 @@
+definitions:
+  model.AuthStatus:
+    properties:
+      expire_at:
+        description: 过期时间
+        example: "2022-05-16 23:00:00"
+        type: string
+      uid:
+        description: b端用户id
+        example: u_12345678901
+        type: string
+    type: object
+info:
+  contact: {}
+paths:
+  /auth/check:
+    get:
+      description: 登录态校验
+      parameters:
+      - description: b端用户token
+        in: header
+        name: b_access_token
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/model.AuthStatus'
+      summary: 登录态校验
+      tags:
+      - 登录态校验
+swagger: "2.0"

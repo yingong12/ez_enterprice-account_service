@@ -1,0 +1,54 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/auth/check": {
+            "get": {
+                "description": "登录态校验",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "登录态校验"
+                ],
+                "summary": "登录态校验",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "b端用户token",
+                        "name": "b_access_token",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/model.AuthStatus"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "model.AuthStatus": {
+            "type": "object",
+            "properties": {
+                "expire_at": {
+                    "description": "过期时间",
+                    "type": "string",
+                    "example": "2022-05-16 23:00:00"
+                },
+                "uid": {
+                    "description": "b端用户id",
+                    "type": "string",
+                    "example": "u_12345678901"
+                }
+            }
+        }
+    }
+}

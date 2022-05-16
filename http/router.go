@@ -1,14 +1,19 @@
 package http
 
 import (
+	_ "account_service/docs" //引入swagger
 	"account_service/http/controller"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func loadRouter() (router *gin.Engine) {
 	gin.SetMode(gin.DebugMode)
 	router = gin.New()
+	//swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler)) // register swagger
 	//routes
 	router.POST("healthy", controller.Healthy)
 	//swagger
