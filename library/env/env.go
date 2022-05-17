@@ -5,9 +5,9 @@ import (
 	"strconv"
 )
 
-func GetIntVal(key string) (res int, err error) {
+func GetIntVal(key string) (res int) {
 	iv := os.Getenv(key)
-	res, err = strconv.Atoi(iv)
+	res, _ = strconv.Atoi(iv)
 	return
 }
 

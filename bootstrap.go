@@ -6,6 +6,7 @@ import (
 	"account_service/library/env"
 	"account_service/logger"
 	"account_service/providers"
+	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -28,16 +29,9 @@ func bootStrap() (err error) {
 		return
 	}
 	log.Println("Logger Started ")
-
 	//加载Redis连接池
-	port, err := env.GetIntVal("REDIS_PORT_ACCOUNT")
-	if err != nil {
-		return
-	}
-	poolSize, err := env.GetIntVal("REDIS_POOL_SIZE")
-	if err != nil {
-		return
-	}
+	port := env.GetIntVal("REDIS_PORT_ACCOUNT")
+	poolSize := env.GetIntVal("REDIS_POOL_SIZE")
 	redisConf := library.RedisConfig{
 		ConnectionName: os.Getenv("SERVICE_NAME"),
 		Addr:           os.Getenv("REDIS_ADDR_ACCOUNT"),
@@ -49,6 +43,34 @@ func bootStrap() (err error) {
 	providers.RedisClient, err = library.NewRedisClient(&redisConf)
 	if err != nil {
 		return
+	}
+	// DB GORM初始化
+	GormConfigs := []*library.GormConfig{
+		{
+			Receiver:       &providers.DBAccount,
+			ConnectionName: "gorm-core",
+			DBName:         env.GetStringVal("DB_ACCOUNT_RW_NAME"),
+			Host:           env.GetStringVal("DB_ACCOUNT_RW_HOST"),
+			Port:           env.GetStringVal("DB_ACCOUNT_RW_PORT"),
+			UserName:       env.GetStringVal("DB_ACCOUNT_RW_USERNAME"),
+			Password:       env.GetStringVal("DB_ACCOUNT_RW_PASSWORD"),
+			MaxLifeTime:    env.GetIntVal("DB_MAX_LIFE_TIME"),
+			MaxOpenConn:    env.GetIntVal("DB_MAX_OPEN_CONN"),
+			MaxIdleConn:    env.GetIntVal("DB_MAX_IDLE_CONN"),
+		},
+	}
+
+	for _, cfg := range GormConfigs {
+		if cfg.Receiver == nil {
+			return fmt.Errorf("[%s] config receiver cannot be nil", cfg.ConnectionName)
+		}
+		if *cfg.Receiver, err = library.NewGormDB(cfg); err != nil {
+			return err
+		}
+		_, e := (*cfg.Receiver).DB.DB()
+		if e != nil {
+			return e
+		}
 	}
 
 	//http server
