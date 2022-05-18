@@ -94,10 +94,6 @@ func SignInUsername(ctx *gin.Context) {
 	}})
 }
 
-func SignInSMS(ctx *gin.Context) {
-	ctx.Writer.Write([]byte("signin/SMS.post"))
-}
-
 //Create	注册登录
 //@Summary	用户名注册
 //@Description	用户名注册
@@ -143,6 +139,73 @@ func SignUpUsername(ctx *gin.Context) {
 	}
 	ctx.JSON(http.StatusOK, rsp)
 }
+
 func SignUpSMS(ctx *gin.Context) {
 	//sms注册
+	/**
+	checkCode(code) -> 注册流程
+	*/
+	req := request.SignUpSMSRequest{}
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": buz_code.CODE_INVALID_ARGS,
+			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
+		})
+		return
+	}
+	accessToken, uid, err, buzCode := service.SinUpSMS(req.Phone, req.Password, req.VerifyCode)
+	if err != nil {
+		logger.Error(err)
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": buz_code.CODE_SERVER_ERROR,
+			"msg":  "server error",
+		})
+		return
+	}
+	rsp := gin.H{}
+	if accessToken == "" {
+		rsp["code"] = buzCode
+		rsp["msg"] = ""
+		ctx.JSON(http.StatusOK, rsp)
+		return
+	}
+	//
+	rsp["code"] = buz_code.CODE_OK
+	rsp["msg"] = "ok"
+	rsp["data"] = response.SignUpRsp{
+		UID:         uid,
+		AccessToken: accessToken,
+	}
+	ctx.JSON(http.StatusOK, rsp)
+}
+
+func SignInSMS(ctx *gin.Context) {
+	req := request.SignInSMSRequest{}
+	if err := ctx.BindJSON(&req); err != nil {
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": buz_code.CODE_INVALID_ARGS,
+			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
+		})
+		return
+	}
+	accessToken, uid, err, buzCode := service.SignInSMS(req.Phone, req.Password, req.VerifyCode)
+	if err != nil {
+		logger.Error(err)
+		ctx.JSON(http.StatusOK, gin.H{
+			"code": buz_code.CODE_SERVER_ERROR,
+			"msg":  "server error",
+		})
+		return
+	}
+	msg := "ok"
+	if accessToken == "" {
+		msg = ""
+		ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg})
+		return
+	}
+	//
+	ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg, "data": response.SignInUsernameRsp{
+		UID:         uid,
+		AccessToken: accessToken,
+	}})
 }

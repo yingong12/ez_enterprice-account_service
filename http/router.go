@@ -32,7 +32,6 @@ func loadRouter() (router *gin.Engine) {
 		auth.POST("/signin/sms", controller.SignInSMS)           //手机登录
 		auth.POST("/signup/username", controller.SignUpUsername) //用户名注册
 		auth.POST("/signup/sms", controller.SignUpSMS)           //手机注册
-		// flow.Use(providers.ServiceOrder())
 	}
 	//账号模块
 	account := router.Group("/account")
@@ -49,7 +48,7 @@ func loadRouter() (router *gin.Engine) {
 	//sms验证码模块
 	sms := router.Group("sms")
 	{
-		sms.POST("/ask_code", controller.AskCode) //向sms服务申请验证码
+		sms.POST("/send_veri_code", controller.SendVerifyCode) //向sms服务申请验证码
 	}
 	return
 }

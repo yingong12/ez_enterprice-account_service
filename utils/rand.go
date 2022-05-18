@@ -9,6 +9,7 @@ const uidLen = 10
 const accessTokenLen = 20
 const uidPrefix = "bu_"
 const charset = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+const charsetNumber = "0123456789"
 
 func genRandomString(prefix string, strLen int, charset string) string {
 	var seededRand *rand.Rand = rand.New(
@@ -25,4 +26,7 @@ func GenerateAccessToken() string {
 }
 func GenerateUID() string {
 	return genRandomString(uidPrefix, uidLen, charset)
+}
+func GenerateVerifyCode() string {
+	return genRandomString("", 6, charsetNumber)
 }

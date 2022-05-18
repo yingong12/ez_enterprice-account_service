@@ -3,6 +3,7 @@ package repository
 import (
 	"account_service/model"
 	"account_service/providers"
+	"fmt"
 	"time"
 
 	"account_service/utils"
@@ -44,14 +45,15 @@ func GetUserByKey(key string, val string) (err error) {
 	err = tx.Error
 	return
 }
-func InsertUser(username, pswd string) (uid string, err error) {
+func InsertUser(username, phone, pswd string) (uid string, err error) {
 	uid = utils.GenerateUID()
 	usr := model.User{
 		Username: username,
+		Phone:    phone,
 		Password: pswd,
 		UID:      uid,
 	}
-
+	fmt.Println(username, ",", phone, ",", pswd)
 	tb := usr.Table()
 	tx := providers.DBAccount.
 		Table(tb).
