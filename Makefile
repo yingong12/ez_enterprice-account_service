@@ -11,6 +11,6 @@ build:export GOARCH=amd64
 build:
 	@echo "building binary for $(GOOS)..."
 	swag init -g http/router.go
-	go build -o ./account_service main.go
+	go build -o ./account_service 
 	@echo "done!"
 	
