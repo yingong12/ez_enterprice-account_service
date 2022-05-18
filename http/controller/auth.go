@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//Create	登录态系统
+//Create	登录态
 //@Summary	登录态校验
 //@Description	登录态校验
 //@Tags	登录态校验
@@ -53,13 +53,16 @@ func Check(ctx *gin.Context) {
 	})
 }
 
+//Create	注册登录
+//@Summary	用户名登录
+//@Description	用户名登录
+//@Tags
+//@Produce	json
+//@Param xxx body request.SignInUsernameRequest  false "注释"
+//@Success 200 {object} response.SignInUsernameRsp
+//@Router	/signin/username [post]
 func SignInUsername(ctx *gin.Context) {
-	/*
-		username
-		password
-	*/
-
-	req := request.SignInUsernameReques{}
+	req := request.SignInUsernameRequest{}
 	if err := ctx.BindJSON(&req); err != nil {
 		ctx.JSON(http.StatusOK, gin.H{
 			"code": buz_code.CODE_INVALID_ARGS,
@@ -95,6 +98,14 @@ func SignInSMS(ctx *gin.Context) {
 	ctx.Writer.Write([]byte("signin/SMS.post"))
 }
 
+//Create	注册登录
+//@Summary	用户名注册
+//@Description	用户名注册
+//@Tags
+//@Produce	json
+//@Param xxx body request.SignUpUsernameRequest false "注释"
+//@Success 200 {object} response.SignUpRsp
+//@Router	/signup/username [post]
 func SignUpUsername(ctx *gin.Context) {
 	/*
 		username+pswd
@@ -133,4 +144,5 @@ func SignUpUsername(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, rsp)
 }
 func SignUpSMS(ctx *gin.Context) {
+	//sms注册
 }

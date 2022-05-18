@@ -44,6 +44,66 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/signin/username": {
+            "post": {
+                "description": "用户名登录",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    ""
+                ],
+                "summary": "用户名登录",
+                "parameters": [
+                    {
+                        "description": "注释",
+                        "name": "xxx",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.SignInUsernameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SignInUsernameRsp"
+                        }
+                    }
+                }
+            }
+        },
+        "/signup/username": {
+            "post": {
+                "description": "用户名注册",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    ""
+                ],
+                "summary": "用户名注册",
+                "parameters": [
+                    {
+                        "description": "注释",
+                        "name": "xxx",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/request.SignUpUsernameRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/response.SignUpRsp"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -59,6 +119,62 @@ const docTemplate = `{
                     "description": "b端用户id",
                     "type": "string",
                     "example": "u_12345678901"
+                }
+            }
+        },
+        "request.SignInUsernameRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "description": "密码，需要包含大小写数字和特殊字符",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "zhuyan"
+                }
+            }
+        },
+        "request.SignUpUsernameRequest": {
+            "type": "object",
+            "properties": {
+                "password": {
+                    "description": "密码，需要包含大小写数字和特殊字符",
+                    "type": "string"
+                },
+                "username": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "zhuyan"
+                }
+            }
+        },
+        "response.SignInUsernameRsp": {
+            "type": "object",
+            "properties": {
+                "b_access_token": {
+                    "description": "b端用户token",
+                    "type": "string",
+                    "example": "b_u_uasdasd"
+                },
+                "uid": {
+                    "description": "用户ID",
+                    "type": "string"
+                }
+            }
+        },
+        "response.SignUpRsp": {
+            "type": "object",
+            "properties": {
+                "b_access_token": {
+                    "description": "b端用户token",
+                    "type": "string",
+                    "example": "b_u_uasdasd"
+                },
+                "uid": {
+                    "description": "用户ID",
+                    "type": "string"
                 }
             }
         }
