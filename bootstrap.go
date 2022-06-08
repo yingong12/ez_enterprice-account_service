@@ -6,6 +6,7 @@ import (
 	"account_service/library/env"
 	"account_service/logger"
 	"account_service/providers"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -19,6 +20,8 @@ import (
 func bootStrap() (err error) {
 	//加载环境变量
 	filePath := ".env"
+	flag.StringVar(&filePath, "c", ".env", "配置文件")
+	flag.Parse()
 	if err = godotenv.Load(filePath); err != nil {
 		return
 	}
