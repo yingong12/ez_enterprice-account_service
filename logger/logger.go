@@ -21,5 +21,5 @@ func run(ctx context.Context) {
 
 }
 func Error(obj interface{}) {
-
+	log.Println(obj)
 }

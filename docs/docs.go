@@ -110,6 +110,9 @@ const docTemplate = `{
         "model.AuthStatus": {
             "type": "object",
             "properties": {
+                "app_id": {
+                    "type": "string"
+                },
                 "expire_at": {
                     "description": "过期时间",
                     "type": "string",

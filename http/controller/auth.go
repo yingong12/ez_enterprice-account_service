@@ -42,13 +42,15 @@ func Check(ctx *gin.Context) {
 		return
 	}
 	code := 0
+	msg := "ok"
 	//为nil时没有登录
 	if authInfo == nil {
 		code = 1
+		msg = "未登录"
 	}
 	ctx.JSON(http.StatusOK, gin.H{
 		"code": code,
-		"msg":  "ok",
+		"msg":  msg,
 		"data": authInfo,
 	})
 }

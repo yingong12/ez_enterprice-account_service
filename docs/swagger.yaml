@@ -1,6 +1,8 @@
 definitions:
   model.AuthStatus:
     properties:
+      app_id:
+        type: string
       expire_at:
         description: 过期时间
         example: "2022-05-16 23:00:00"

@@ -1,13 +1,15 @@
 package model
 
 type AuthStatus struct {
-	UID       string `json:"uid" example:"u_12345678901"`             //b端用户id
+	UID       string `json:"uid" example:"u_12345678901"` //b端用户id
+	AppID     string `json:"app_id"`
 	ExpiresAt string `json:"expire_at" example:"2022-05-16 23:00:00"` //过期时间
+
 }
 
 //t_b_user
 type User struct {
-	APP_ID   string `gorm:"column:app_id"`
+	AppID    string `gorm:"column:app_id"`
 	UID      string `gorm:"column:uid"`
 	Password string `gorm:"column:pswd"`
 	Username string `gorm:"column:username"`

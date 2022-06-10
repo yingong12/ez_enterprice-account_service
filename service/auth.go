@@ -32,7 +32,7 @@ func SignUpUsername(username, pswd string) (accessToken, uid string, err error) 
 			return
 		}
 		//没问题后注册用户并登录
-		accessToken, err = setLoginStatus(uid)
+		accessToken, err = setLoginStatus(uid, "")
 		tx.Commit()
 	}()
 	//没被注册才继续
@@ -57,15 +57,16 @@ func SignInUsername(username, pswd string) (accessToken, uid string, err error) 
 		return
 	}
 	uid = usr.UID
-	accessToken, err = setLoginStatus(uid)
+	appID := usr.AppID
+	accessToken, err = setLoginStatus(uid, appID)
 	return
 
 }
 
 //设置登录态
-func setLoginStatus(uid string) (accessToken string, err error) {
+func setLoginStatus(uid, appID string) (accessToken string, err error) {
 	accessToken = utils.GenerateAccessToken()
-	err = repository.SetLoginStatus(uid, accessToken)
+	err = repository.SetLoginStatus(uid, appID, accessToken)
 	return
 }
 
@@ -108,7 +109,7 @@ func SinUpSMS(phone, password, verifyCode string) (accessToken, uid string, err 
 			return
 		}
 		//没问题后注册用户并登录
-		accessToken, err = setLoginStatus(uid)
+		accessToken, err = setLoginStatus(uid, "")
 		tx.Commit()
 	}()
 	//没被注册才继续
@@ -143,6 +144,6 @@ func SignInSMS(phone, password, verifyCode string) (accessToken, uid string, err
 		return
 	}
 	uid = usr.UID
-	accessToken, err = setLoginStatus(uid)
+	accessToken, err = setLoginStatus(uid, usr.AppID)
 	return
 }
