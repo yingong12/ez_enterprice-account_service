@@ -5,9 +5,7 @@ import (
 	"account_service/http/request"
 	"account_service/http/response"
 	"account_service/library/env"
-	"account_service/logger"
 	"account_service/service"
-	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,38 +19,28 @@ import (
 //@Param  b_access_token header string true "b端用户token"
 //@Success 200 {object} model.AuthStatus
 //@Router	/auth/check [get]
-func Check(ctx *gin.Context) {
+func Check(ctx *gin.Context) (res *STDResponse, err error) {
 	token := ctx.GetHeader(env.GetStringVal("TOKEN_KEY"))
 	//参数校验
 	if token == "" {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": 400,
-			"msg":  "缺少token",
-		})
+		res.Code = buz_code.CODE_NO_TOKEN
+		res.Msg = "no token"
 		return
 	}
 	//buz逻辑
 	authInfo, err := service.Check(token)
 	if err != nil {
-		logger.Error(err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  "server error",
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
 		return
 	}
-	code := 0
-	msg := "ok"
 	//为nil时没有登录
 	if authInfo == nil {
-		code = 1
-		msg = "未登录"
+		res.Code = buz_code.CODE_AUTH_FAILED
+		res.Msg = "未登录"
 	}
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  msg,
-		"data": authInfo,
-	})
+	res.Data = authInfo
+	return
 }
 
 //Create	注册登录
@@ -63,37 +51,29 @@ func Check(ctx *gin.Context) {
 //@Param xxx body request.SignInUsernameRequest  false "注释"
 //@Success 200 {object} response.SignInUsernameRsp
 //@Router	/signin/username [post]
-func SignInUsername(ctx *gin.Context) {
+func SignInUsername(ctx *gin.Context) (res *STDResponse, err error) {
 	req := request.SignInUsernameRequest{}
-	if err := ctx.BindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_INVALID_ARGS,
-			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
-		})
+	if err = ctx.BindJSON(&req); err != nil {
+		res.Code = buz_code.CODE_INVALID_ARGS
+		res.Msg = err.Error()
 		return
 	}
 	accessToken, uid, err := service.SignInUsername(req.Username, req.Password)
 	if err != nil {
-		logger.Error(err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  "server error",
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
 		return
 	}
-	buzCode := buz_code.CODE_OK
-	msg := "ok"
 	if accessToken == "" {
-		buzCode = buz_code.CODE_USERNAME_PSWD_NOT_MATCH
-		msg = "用户名密码不匹配"
-		ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg})
+		res.Code = buz_code.CODE_USERNAME_PSWD_NOT_MATCH
+		res.Msg = "用户名密码不匹配"
 		return
 	}
-	//
-	ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg, "data": response.SignInUsernameRsp{
+	res.Data = response.SignInUsernameRsp{
 		UID:         uid,
 		AccessToken: accessToken,
-	}})
+	}
+	return
 }
 
 //Create	注册登录
@@ -104,64 +84,49 @@ func SignInUsername(ctx *gin.Context) {
 //@Param xxx body request.SignUpUsernameRequest false "注释"
 //@Success 200 {object} response.SignUpRsp
 //@Router	/signup/username [post]
-func SignUpUsername(ctx *gin.Context) {
+func SignUpUsername(ctx *gin.Context) (res *STDResponse, err error) {
 	/*
 		username+pswd
 	*/
 	req := request.SignUpUsernameRequest{}
-	if err := ctx.BindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_INVALID_ARGS,
-			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
-		})
+	if err = ctx.BindJSON(&req); err != nil {
+		res.Code = buz_code.CODE_INVALID_ARGS
+		res.Msg = err.Error()
 		return
 	}
 	accessToken, uid, err := service.SignUpUsername(req.Username, req.Password)
 	if err != nil {
-		logger.Error(err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  "server error",
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
 		return
 	}
-	rsp := gin.H{}
 	if accessToken == "" {
-		rsp["code"] = buz_code.CODE_USER_ALREADY_EXISTS
-		rsp["msg"] = "用户名已存在"
-		ctx.JSON(http.StatusOK, rsp)
+		res.Code = buz_code.CODE_USER_ALREADY_EXISTS
+		res.Msg = "用户名已存在"
 		return
 	}
-	//
-	rsp["code"] = buz_code.CODE_OK
-	rsp["msg"] = "ok"
-	rsp["data"] = response.SignUpRsp{
+	res.Data = response.SignUpRsp{
 		UID:         uid,
 		AccessToken: accessToken,
 	}
-	ctx.JSON(http.StatusOK, rsp)
+	return
 }
 
-func SignUpSMS(ctx *gin.Context) {
+func SignUpSMS(ctx *gin.Context) (res *STDResponse, err error) {
 	//sms注册
 	/**
 	checkCode(code) -> 注册流程
 	*/
 	req := request.SignUpSMSRequest{}
-	if err := ctx.BindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_INVALID_ARGS,
-			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
-		})
+	if err = ctx.BindJSON(&req); err != nil {
+		res.Code = buz_code.CODE_INVALID_ARGS
+		res.Msg = err.Error()
 		return
 	}
 	accessToken, uid, err, buzCode := service.SinUpSMS(req.Phone, req.Password, req.VerifyCode)
 	if err != nil {
-		logger.Error(err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  "server error",
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
 		return
 	}
 	rsp := gin.H{}
@@ -171,43 +136,35 @@ func SignUpSMS(ctx *gin.Context) {
 		ctx.JSON(http.StatusOK, rsp)
 		return
 	}
-	//
-	rsp["code"] = buz_code.CODE_OK
-	rsp["msg"] = "ok"
-	rsp["data"] = response.SignUpRsp{
+	res.Data = response.SignUpRsp{
 		UID:         uid,
 		AccessToken: accessToken,
 	}
-	ctx.JSON(http.StatusOK, rsp)
+	return
 }
 
-func SignInSMS(ctx *gin.Context) {
+func SignInSMS(ctx *gin.Context) (res *STDResponse, err error) {
 	req := request.SignInSMSRequest{}
-	if err := ctx.BindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_INVALID_ARGS,
-			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
-		})
+	if err = ctx.BindJSON(&req); err != nil {
+		res.Code = buz_code.CODE_INVALID_ARGS
+		res.Msg = err.Error()
 		return
 	}
 	accessToken, uid, err, buzCode := service.SignInSMS(req.Phone, req.Password, req.VerifyCode)
 	if err != nil {
-		logger.Error(err)
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  "server error",
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
 		return
 	}
-	msg := "ok"
+	res.Code = buzCode
 	if accessToken == "" {
-		msg = ""
-		ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg})
+		res.Msg = ""
 		return
 	}
 	//
-	ctx.JSON(http.StatusOK, gin.H{"code": buzCode, "msg": msg, "data": response.SignInUsernameRsp{
+	res.Data = response.SignInUsernameRsp{
 		UID:         uid,
 		AccessToken: accessToken,
-	}})
+	}
+	return
 }

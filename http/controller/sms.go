@@ -4,38 +4,29 @@ import (
 	"account_service/http/buz_code"
 	"account_service/http/request"
 	"account_service/service"
-	"fmt"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 //发送验证码
-func SendVerifyCode(ctx *gin.Context) {
+func SendVerifyCode(ctx *gin.Context) (res *STDResponse, err error) {
 	req := request.SendVerifyCodeRequest{}
-	if err := ctx.BindJSON(&req); err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_INVALID_ARGS,
-			"msg":  fmt.Sprintf("invalid params %s\n", err.Error()),
-		})
+	if err = ctx.BindJSON(&req); err != nil {
+		res.Code = buz_code.CODE_INVALID_ARGS
+		res.Msg = err.Error()
 		return
 	}
 	ok, err := service.SendVerifyCode(req.Phone)
 	if err != nil {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_SERVER_ERROR,
-			"msg":  err,
-		})
+		res.Code = buz_code.CODE_SERVER_ERROR
+		res.Msg = "server error"
+		return
 	}
 	if !ok {
-		ctx.JSON(http.StatusOK, gin.H{
-			"code": buz_code.CODE_TOO_MUCH_TRY_SMS,
-			"msg":  "验证码未过期，勿频繁操作",
-		})
+		res.Code = buz_code.CODE_TOO_MUCH_TRY_SMS
+		res.Msg = "验证码未过期，勿频繁操作"
 		return
 	}
 	//
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": buz_code.CODE_OK,
-		"msg":  "ok"})
+	return
 }
