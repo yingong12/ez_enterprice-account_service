@@ -30,7 +30,6 @@ func GetAuthStatus(token string) (as *model.AuthStatus, err error) {
 		return
 	}
 	as = &model.AuthStatus{}
-	fmt.Println(res, 30, token)
 	as.UID = res["uid"]
 	as.AppID = res["app_id"]
 	return

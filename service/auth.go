@@ -7,7 +7,6 @@ import (
 	"account_service/providers"
 	"account_service/repository"
 	"account_service/utils"
-	"log"
 
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
@@ -17,7 +16,6 @@ func Check(accessToken string) (authInfo *model.AuthStatus, err error) {
 	authInfo, err = repository.GetAuthStatus(accessToken)
 	//空key 未登录
 	if err == redis.Nil {
-		log.Println(accessToken, err)
 		err = nil
 	}
 	return
@@ -39,6 +37,7 @@ func SignUpUsername(username, pswd string) (accessToken, uid string, err error) 
 	if err = repository.GetUserByKey("username", username); err != gorm.ErrRecordNotFound {
 		return
 	}
+	//TODO:需要生成随机电话号码
 	uid, err = repository.InsertUser(username, "", pswd)
 	return
 }

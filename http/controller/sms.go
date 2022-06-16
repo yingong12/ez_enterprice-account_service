@@ -9,7 +9,7 @@ import (
 )
 
 //发送验证码
-func SendVerifyCode(ctx *gin.Context) (res *STDResponse, err error) {
+func SendVerifyCode(ctx *gin.Context) (res STDResponse, err error) {
 	req := request.SendVerifyCodeRequest{}
 	if err = ctx.BindJSON(&req); err != nil {
 		res.Code = buz_code.CODE_INVALID_ARGS

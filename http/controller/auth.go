@@ -19,7 +19,7 @@ import (
 //@Param  b_access_token header string true "b端用户token"
 //@Success 200 {object} model.AuthStatus
 //@Router	/auth/check [get]
-func Check(ctx *gin.Context) (res *STDResponse, err error) {
+func Check(ctx *gin.Context) (res STDResponse, err error) {
 	token := ctx.GetHeader(env.GetStringVal("TOKEN_KEY"))
 	//参数校验
 	if token == "" {
@@ -35,7 +35,7 @@ func Check(ctx *gin.Context) (res *STDResponse, err error) {
 		return
 	}
 	//为nil时没有登录
-	if authInfo == nil {
+	if authInfo.AppID == "" && authInfo.UID == "" {
 		res.Code = buz_code.CODE_AUTH_FAILED
 		res.Msg = "未登录"
 	}
@@ -51,7 +51,7 @@ func Check(ctx *gin.Context) (res *STDResponse, err error) {
 //@Param xxx body request.SignInUsernameRequest  false "注释"
 //@Success 200 {object} response.SignInUsernameRsp
 //@Router	/signin/username [post]
-func SignInUsername(ctx *gin.Context) (res *STDResponse, err error) {
+func SignInUsername(ctx *gin.Context) (res STDResponse, err error) {
 	req := request.SignInUsernameRequest{}
 	if err = ctx.BindJSON(&req); err != nil {
 		res.Code = buz_code.CODE_INVALID_ARGS
@@ -84,7 +84,7 @@ func SignInUsername(ctx *gin.Context) (res *STDResponse, err error) {
 //@Param xxx body request.SignUpUsernameRequest false "注释"
 //@Success 200 {object} response.SignUpRsp
 //@Router	/signup/username [post]
-func SignUpUsername(ctx *gin.Context) (res *STDResponse, err error) {
+func SignUpUsername(ctx *gin.Context) (res STDResponse, err error) {
 	/*
 		username+pswd
 	*/
@@ -112,7 +112,7 @@ func SignUpUsername(ctx *gin.Context) (res *STDResponse, err error) {
 	return
 }
 
-func SignUpSMS(ctx *gin.Context) (res *STDResponse, err error) {
+func SignUpSMS(ctx *gin.Context) (res STDResponse, err error) {
 	//sms注册
 	/**
 	checkCode(code) -> 注册流程
@@ -143,7 +143,7 @@ func SignUpSMS(ctx *gin.Context) (res *STDResponse, err error) {
 	return
 }
 
-func SignInSMS(ctx *gin.Context) (res *STDResponse, err error) {
+func SignInSMS(ctx *gin.Context) (res STDResponse, err error) {
 	req := request.SignInSMSRequest{}
 	if err = ctx.BindJSON(&req); err != nil {
 		res.Code = buz_code.CODE_INVALID_ARGS
