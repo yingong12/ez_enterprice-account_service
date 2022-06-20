@@ -34,6 +34,10 @@ definitions:
     type: object
   response.SignInUsernameRsp:
     properties:
+      app_id:
+        description: appID
+        example: app_asd
+        type: string
       b_access_token:
         description: b端用户token
         example: b_u_uasdasd

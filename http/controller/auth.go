@@ -58,7 +58,7 @@ func SignInUsername(ctx *gin.Context) (res STDResponse, err error) {
 		res.Msg = err.Error()
 		return
 	}
-	accessToken, uid, err := service.SignInUsername(req.Username, req.Password)
+	accessToken, uid, appID, err := service.SignInUsername(req.Username, req.Password)
 	if err != nil {
 		res.Code = buz_code.CODE_SERVER_ERROR
 		res.Msg = "server error"
@@ -72,6 +72,7 @@ func SignInUsername(ctx *gin.Context) (res STDResponse, err error) {
 	res.Data = response.SignInUsernameRsp{
 		UID:         uid,
 		AccessToken: accessToken,
+		AppID:       appID,
 	}
 	return
 }

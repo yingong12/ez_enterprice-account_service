@@ -43,7 +43,7 @@ func SignUpUsername(username, pswd string) (accessToken, uid string, err error) 
 }
 
 //TODO:这里要做同时valid token数量的限制
-func SignInUsername(username, pswd string) (accessToken, uid string, err error) {
+func SignInUsername(username, pswd string) (accessToken, uid, appID string, err error) {
 	m := map[string]interface{}{
 		"username": username,
 		"pswd":     pswd,
@@ -56,7 +56,7 @@ func SignInUsername(username, pswd string) (accessToken, uid string, err error) 
 		return
 	}
 	uid = usr.UID
-	appID := usr.AppID
+	appID = usr.AppID
 	accessToken, err = setLoginStatus(uid, appID)
 	return
 

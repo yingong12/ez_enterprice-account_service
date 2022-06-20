@@ -156,6 +156,11 @@ const docTemplate = `{
         "response.SignInUsernameRsp": {
             "type": "object",
             "properties": {
+                "app_id": {
+                    "description": "appID",
+                    "type": "string",
+                    "example": "app_asd"
+                },
                 "b_access_token": {
                     "description": "b端用户token",
                     "type": "string",
