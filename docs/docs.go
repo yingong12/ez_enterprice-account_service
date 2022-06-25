@@ -161,6 +161,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "app_asd"
                 },
+                "app_type": {
+                    "description": "类型 0-企业 1-机构",
+                    "type": "integer",
+                    "example": 1
+                },
                 "b_access_token": {
                     "description": "b端用户token",
                     "type": "string",

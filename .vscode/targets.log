@@ -7,7 +7,7 @@ make all --print-data-base --no-builtin-variables --no-builtin-rules --question
 
 # This program built for i386-apple-darwin11.3.0
 
-# Make data base, printed on Mon Jun 20 00:50:09 2022
+# Make data base, printed on Fri Jun 24 10:08:44 2022
 
 # Variables
 
@@ -40,19 +40,19 @@ VSCODE_VERBOSE_LOGGING = true
 # environment
 __CFBundleIdentifier = com.microsoft.VSCode
 # environment
-VSCODE_IPC_HOOK_EXTHOST = /var/folders/mv/vnpljmzd19v5xb2jhfc_9x340000gn/T/vscode-ipc-217fe75b-6a4d-4262-be0c-efe74c29f8f5.sock
+VSCODE_IPC_HOOK_EXTHOST = /var/folders/mv/vnpljmzd19v5xb2jhfc_9x340000gn/T/vscode-ipc-071a6668-7b49-4407-ac3c-6ae8bd61e8ab.sock
 # environment
 VSCODE_CWD = /
 # environment
 GOPROXY = https://goproxy.cn,direct
 # environment
-PATH = /usr/local/go/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin
+PATH = /usr/local/go/bin:/usr/bin:/bin:/usr/sbin:/sbin
 # environment
 GOPATH = /Users/yin/go
 # makefile (from `Makefile', line 2)
 port = 8686
 # environment
-LaunchInstanceID = AF1D207D-43F3-4A56-9FB3-61A44025F612
+LaunchInstanceID = 9CEDFFB1-AC84-40AC-943D-08BE64C5172C
 # environment
 VSCODE_LOG_STACK = false
 # environment
@@ -60,7 +60,7 @@ ELECTRON_RUN_AS_NODE = 1
 # default
 .FEATURES := target-specific order-only second-expansion else-if archives jobserver check-symlink
 # environment
-SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.YgG5Ul6U5z/Listeners
+SSH_AUTH_SOCK = /private/tmp/com.apple.launchd.TcX7jNrjFV/Listeners
 # automatic
 %F = $(notdir $%)
 # environment
@@ -76,11 +76,11 @@ HOME = /Users/yin
 # default
 MAKEFILEPATH := /Applications/Xcode.app/Contents/Developer/Makefiles
 # environment
-VSCODE_CODE_CACHE_PATH = /Users/yin/Library/Application Support/Code/CachedData/4af164ea3a06f701fe3e89a2bcbb421d2026b68f
+VSCODE_CODE_CACHE_PATH = /Users/yin/Library/Application Support/Code/CachedData/30d9c6cd9483b2cc586687151bcbcd635f373630
 # environment
 LOGNAME = yin
 # environment
-APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = true
+APPLICATION_INSIGHTS_NO_DIAGNOSTIC_CHANNEL = 1
 # environment
 VSCODE_HANDLES_UNCAUGHT_ERRORS = true
 # automatic
@@ -110,7 +110,7 @@ TMPDIR = /var/folders/mv/vnpljmzd19v5xb2jhfc_9x340000gn/T/
 # automatic
 *F = $(notdir $*)
 # environment
-VSCODE_IPC_HOOK = /Users/yin/Library/Application Support/Code/1.68.0-main.sock
+VSCODE_IPC_HOOK = /Users/yin/Library/Application Support/Code/1.68.1-main.sock
 # makefile
 MAKEFLAGS = Rrqp
 # environment
@@ -118,7 +118,7 @@ MFLAGS = -Rrqp
 # automatic
 *D = $(patsubst %/,%,$(dir $*))
 # environment
-XPC_SERVICE_NAME = application.com.microsoft.VSCode.24181142.24181148
+XPC_SERVICE_NAME = application.com.microsoft.VSCode.25340812.25340818
 # automatic
 +D = $(patsubst %/,%,$(dir $+))
 # automatic
@@ -134,7 +134,7 @@ MAKEFILES :=
 # environment
 LC_ALL = C
 # environment
-SECURITYSESSIONID = 186a8
+SECURITYSESSIONID = 186a9
 # automatic
 ^F = $(notdir $^)
 # default
@@ -148,7 +148,7 @@ os = linux
 # environment
 LANG = C
 # environment
-VSCODE_PID = 510
+VSCODE_PID = 681
 # variable set hash-table stats:
 # Load=69/1024=7%, Rehash=0, Collisions=4/97=4%
 
@@ -158,7 +158,7 @@ VSCODE_PID = 510
 
 # Directories
 
-# . (device 16777231, inode 21656250): 25 files, no impossibilities.
+# . (device 16777232, inode 21656250): 25 files, no impossibilities.
 
 # 25 files, no impossibilities in 1 directories.
 
@@ -237,7 +237,7 @@ run:
 # strcache size: total = 4096 / max = 4096 / min = 4096 / avg = 4096
 # strcache free: total = 4087 / max = 4087 / min = 4087 / avg = 4087
 
-# Finished Make data base on Mon Jun 20 00:50:09 2022
+# Finished Make data base on Fri Jun 24 10:08:44 2022
 
  
 make: *** No rule to make target `all'.  Stop.

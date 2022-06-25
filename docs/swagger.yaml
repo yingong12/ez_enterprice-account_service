@@ -38,6 +38,10 @@ definitions:
         description: appID
         example: app_asd
         type: string
+      app_type:
+        description: 类型 0-企业 1-机构
+        example: 1
+        type: integer
       b_access_token:
         description: b端用户token
         example: b_u_uasdasd

@@ -69,11 +69,16 @@ func SignInUsername(ctx *gin.Context) (res STDResponse, err error) {
 		res.Msg = "用户名密码不匹配"
 		return
 	}
-	res.Data = response.SignInUsernameRsp{
+	rsp := response.SignInUsernameRsp{
 		UID:         uid,
 		AccessToken: accessToken,
 		AppID:       appID,
 	}
+
+	if appID[0] == 'g' {
+		rsp.AppType = 1
+	}
+	res.Data = rsp
 	return
 }
 
