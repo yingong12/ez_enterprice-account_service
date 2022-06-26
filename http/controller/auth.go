@@ -74,8 +74,7 @@ func SignInUsername(ctx *gin.Context) (res STDResponse, err error) {
 		AccessToken: accessToken,
 		AppID:       appID,
 	}
-
-	if appID[0] == 'g' {
+	if len(appID) > 0 && appID[0] == 'g' {
 		rsp.AppType = 1
 	}
 	res.Data = rsp
