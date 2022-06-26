@@ -20,7 +20,7 @@ func SetLoginStatus(uid, appID, accessToken string) (err error) {
 	}); cmd.Err() != nil {
 		return cmd.Err()
 	}
-	cmd := providers.RedisClient.Expire(accessToken, time.Hour*2)
+	cmd := providers.RedisClient.Expire(prefixedToken, time.Hour*2)
 	return cmd.Err()
 }
 func GetAuthStatus(token string) (as *model.AuthStatus, err error) {

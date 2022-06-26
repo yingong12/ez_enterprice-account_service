@@ -13,8 +13,8 @@ import (
 )
 
 func Check(accessToken string) (authInfo *model.AuthStatus, err error) {
+	//TODO:需要读延期，不然用户用一半退出了，尴尬
 	authInfo, err = repository.GetAuthStatus(accessToken)
-	//空key 未登录
 	if err == redis.Nil {
 		err = nil
 	}
