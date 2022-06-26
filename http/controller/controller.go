@@ -18,6 +18,9 @@ type RawResponse []byte
 func STDwrapperJSON(handler func(*gin.Context) (STDResponse, error)) func(*gin.Context) {
 	return func(ctx *gin.Context) {
 		res, err := handler(ctx)
+		if err != nil {
+			res.Msg = err.Error()
+		}
 		ctx.Set("buz_err", err)
 		//http status永远200。 用buz_code去表示错误
 		status := http.StatusOK

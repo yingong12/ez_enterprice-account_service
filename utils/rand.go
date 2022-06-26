@@ -30,3 +30,10 @@ func GenerateUID() string {
 func GenerateVerifyCode() string {
 	return genRandomString("", 6, charsetNumber)
 }
+func GenerateGroupID() string {
+	return genRandomString("grp_", 16, charset)
+}
+
+func GenerateAppID() string {
+	return genRandomString("app_", 10, charset)
+}

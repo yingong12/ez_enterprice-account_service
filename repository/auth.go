@@ -5,6 +5,7 @@ import (
 	"account_service/model"
 	"account_service/providers"
 	"fmt"
+	"log"
 	"time"
 
 	"account_service/utils"
@@ -14,6 +15,7 @@ import (
 
 func SetLoginStatus(uid, appID, accessToken string) (err error) {
 	prefixedToken := env.GetStringVal("KEY_PREFIX_B_TOKEN") + accessToken
+	log.Println(prefixedToken, uid, appID)
 	if cmd := providers.RedisClient.HMSet(prefixedToken, map[string]interface{}{
 		"uid":    uid,
 		"app_id": appID,
