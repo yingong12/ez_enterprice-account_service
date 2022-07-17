@@ -2,6 +2,7 @@ package library
 
 import (
 	"encoding/json"
+	"errors"
 
 	openapi "github.com/alibabacloud-go/darabonba-openapi/client"
 	dysmsapi20170525 "github.com/alibabacloud-go/dysmsapi-20170525/v2/client"
@@ -40,17 +41,23 @@ func SendSMS(client *dysmsapi20170525.Client, phone, code string) (err error) {
 		TemplateParam: tea.String(string(j)),
 	}
 	runtime := &util.RuntimeOptions{}
-	err = func() (_e error) {
+	rsp, err := func() (rsp *dysmsapi20170525.SendSmsResponse, _e error) {
 		defer func() {
 			if r := tea.Recover(recover()); r != nil {
 				_e = r
 			}
 		}()
 		// 复制代码运行请自行打印 API 的返回值
-		_, _e = client.SendSmsWithOptions(sendSmsRequest, runtime)
+		rsp, _e = client.SendSmsWithOptions(sendSmsRequest, runtime)
 		return
 	}()
-
+	if err != nil {
+		return
+	}
+	//*捕捉限流错误码
+	if *(rsp.Body.Code) == "isv.BUSINESS_LIMIT_CONTROL" {
+		err = errors.New("触发限流，对不起请稍后再试")
+	}
 	// if tryErr != nil {
 	// 	var error = &tea.SDKError{}
 	// 	if _t, ok := tryErr.(*tea.SDKError); ok {

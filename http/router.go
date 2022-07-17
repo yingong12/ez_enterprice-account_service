@@ -35,22 +35,12 @@ func loadRouter() (router *gin.Engine) {
 		auth.POST("/signin/sms", controller.STDwrapperJSON(controller.SignInSMS))           //手机登录
 		auth.POST("/signup/username", controller.STDwrapperJSON(controller.SignUpUsername)) //用户名注册
 		auth.POST("/signup/sms", controller.STDwrapperJSON(controller.SignUpSMS))           //手机注册
+		auth.POST("/send_sms_code", controller.STDwrapperJSON(controller.SendVerifyCode))   //向sms服务申请验证码
 	}
 	//账号模块
 	account := router.Group("/account")
 	{
 		account.GET("/init_app", controller.STDwrapperJSON(controller.InitApp)) //初始化企业，绑定空企业或者店铺
-		// 	account.PUT("/username/:uid", controller.STDwrapperJSON(controller.BindUsername)) //绑定用户名
-		// 	account.PUT("/phone/:uid", controller.STDwrapperJSON(controller.BindPhone))       //绑定手机号
-		// 	auth.PUT("/pswd/:uid", controller.STDwrapperJSON(controller.UpdatePswd))          //修改密码
-		// 	//TODO: 明天想重置密码怎么弄
-		// 	// auth.POST("/reset_pswd") //重置密码 需带一个special token
-		// 	//查询角色
-	}
-	//sms验证码模块
-	sms := router.Group("sms")
-	{
-		sms.POST("/send_veri_code", controller.STDwrapperJSON(controller.SendVerifyCode)) //向sms服务申请验证码
 	}
 	return
 }
