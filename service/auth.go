@@ -7,6 +7,7 @@ import (
 	"account_service/providers"
 	"account_service/repository"
 	"account_service/utils"
+	"errors"
 
 	"github.com/go-redis/redis"
 	"gorm.io/gorm"
@@ -21,7 +22,7 @@ func Check(accessToken string) (authInfo *model.AuthStatus, err error) {
 	return
 }
 
-func SignUpUsername(username, pswd string) (accessToken, uid string, err error) {
+func SignUpUsername(username, phone, veriCode, pswd string) (accessToken, uid string, err error) {
 	tx := providers.DBAccount.Begin()
 	defer func() {
 		//网络错误或者已被注册
@@ -33,12 +34,21 @@ func SignUpUsername(username, pswd string) (accessToken, uid string, err error) 
 		accessToken, err = setLoginStatus(uid, "")
 		tx.Commit()
 	}()
-	//没被注册才继续
-	if err = repository.GetUserByKey("username", username); err != gorm.ErrRecordNotFound {
+	m := map[string]interface{}{
+		"username": username,
+		"phone":    phone,
+	}
+	serverCode, err := repository.GetSMSEntry(env.GetStringVal("KEY_PREFIX_SMS") + phone)
+	//验证码校验失败
+	if serverCode == "" || serverCode != veriCode {
+		err = errors.New("Invalid verify code")
 		return
 	}
-	//TODO:需要生成随机电话号码
-	uid, err = repository.InsertUser(username, "", pswd)
+	//没被注册才继续
+	if _, err = repository.GetUserByKeys(m); err != gorm.ErrRecordNotFound {
+		return
+	}
+	uid, err = repository.InsertUser(username, phone, pswd)
 	return
 }
 
@@ -71,6 +81,8 @@ func setLoginStatus(uid, appID string) (accessToken string, err error) {
 
 //校验验证码
 func checkVerifyCode(verifyCode, phone string) (ok bool, err error) {
+	ok = true
+	return
 	serverCode, err := repository.GetSMSEntry(env.GetStringVal("KEY_PREFIX_SMS") + phone)
 	//验证码校验不通过
 	if err != nil {
@@ -83,43 +95,45 @@ func checkVerifyCode(verifyCode, phone string) (ok bool, err error) {
 	ok = serverCode == verifyCode
 	return
 }
-func SinUpSMS(phone, password, verifyCode string) (accessToken, uid string, err error, buzCode buz_code.Code) {
-	//校验验证码
-	ok, err := checkVerifyCode(verifyCode, phone)
-	if err != nil {
-		return
-	}
-	if !ok {
-		buzCode = buz_code.CODE_BAD_SMS_CODE
-		return
-	}
-	//
-	tx := providers.DBAccount.Begin()
-	defer func() {
-		//网络错误或者已被注册
-		if err != nil {
-			tx.Rollback()
-			return
-		}
-		//已注册
-		if uid == "" {
-			buzCode = buz_code.CODE_USER_ALREADY_EXISTS
-			tx.Rollback()
-			return
-		}
-		//没问题后注册用户并登录
-		accessToken, err = setLoginStatus(uid, "")
-		tx.Commit()
-	}()
-	//没被注册才继续
-	if err = repository.GetUserByKey("phone", phone); err != gorm.ErrRecordNotFound {
-		return
-	}
-	uid, err = repository.InsertUser("", phone, password)
-	return
-}
 
-func SignInSMS(phone, password, verifyCode string) (accessToken, uid string, err error, buzCode buz_code.Code) {
+// func SinUpSMS(phone, verifyCode string) (accessToken, uid string, err error, buzCode buz_code.Code) {
+// 	//校验验证码
+// 	ok, err := checkVerifyCode(verifyCode, phone)
+// 	if err != nil {
+// 		return
+// 	}
+// 	if !ok {
+// 		buzCode = buz_code.CODE_BAD_SMS_CODE
+// 		return
+// 	}
+// 	//
+// 	tx := providers.DBAccount.Begin()
+// 	defer func() {
+// 		//网络错误或者已被注册
+// 		if err != nil {
+// 			tx.Rollback()
+// 			return
+// 		}
+// 		//已注册
+// 		if uid == "" {
+// 			buzCode = buz_code.CODE_USER_ALREADY_EXISTS
+// 			tx.Rollback()
+// 			return
+// 		}
+// 		//没问题后注册用户并登录
+// 		accessToken, err = setLoginStatus(uid, "")
+// 		tx.Commit()
+// 	}()
+// 	//没被注册才继续
+// 	if err = repository.GetUserByKey("phone", phone); err != gorm.ErrRecordNotFound {
+// 		return
+// 	}
+// 	//生成随机uid
+// 	uid, err = repository.InsertUser("", phone)
+// 	return
+// }
+
+func SignInSMS(phone, verifyCode string) (accessToken, uid string, err error, buzCode buz_code.Code) {
 	//校验验证码
 	ok, err := checkVerifyCode(verifyCode, phone)
 	if err != nil {
@@ -132,7 +146,6 @@ func SignInSMS(phone, password, verifyCode string) (accessToken, uid string, err
 	//业务逻辑
 	m := map[string]interface{}{
 		"phone": phone,
-		"pswd":  password,
 	}
 	usr, err := repository.GetUserByKeys(m)
 	if err != nil {

@@ -75,7 +75,13 @@ func bootStrap() (err error) {
 			return e
 		}
 	}
-
+	//短信服务
+	acKey := env.GetStringVal("SMS_ACCESS_KEY")
+	acSecret := env.GetStringVal("SMS_SECRET")
+	providers.SMSClient, err = library.CreateClient(acKey, acSecret)
+	if err != nil {
+		return
+	}
 	//http server
 	err, shutdownHttpServer := http.Start()
 	if err != nil {

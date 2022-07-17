@@ -6,7 +6,6 @@ import (
 	"account_service/http/response"
 	"account_service/library/env"
 	"account_service/service"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -99,7 +98,7 @@ func SignUpUsername(ctx *gin.Context) (res STDResponse, err error) {
 		res.Msg = err.Error()
 		return
 	}
-	accessToken, uid, err := service.SignUpUsername(req.Username, req.Password)
+	accessToken, uid, err := service.SignUpUsername(req.Username, req.Phone, req.VerifyCode, req.Password)
 	if err != nil {
 		res.Code = buz_code.CODE_SERVER_ERROR
 		res.Msg = "server error"
@@ -122,29 +121,29 @@ func SignUpSMS(ctx *gin.Context) (res STDResponse, err error) {
 	/**
 	checkCode(code) -> 注册流程
 	*/
-	req := request.SignUpSMSRequest{}
-	if err = ctx.BindJSON(&req); err != nil {
-		res.Code = buz_code.CODE_INVALID_ARGS
-		res.Msg = err.Error()
-		return
-	}
-	accessToken, uid, err, buzCode := service.SinUpSMS(req.Phone, req.Password, req.VerifyCode)
-	if err != nil {
-		res.Code = buz_code.CODE_SERVER_ERROR
-		res.Msg = "server error"
-		return
-	}
-	rsp := gin.H{}
-	if accessToken == "" {
-		rsp["code"] = buzCode
-		rsp["msg"] = ""
-		ctx.JSON(http.StatusOK, rsp)
-		return
-	}
-	res.Data = response.SignUpRsp{
-		UID:         uid,
-		AccessToken: accessToken,
-	}
+	// req := request.SignUpSMSRequest{}
+	// if err = ctx.BindJSON(&req); err != nil {
+	// 	res.Code = buz_code.CODE_INVALID_ARGS
+	// 	res.Msg = err.Error()
+	// 	return
+	// }
+	// accessToken, uid, err, buzCode := service.SinUpSMS(req.Phone, req.VerifyCode)
+	// if err != nil {
+	// 	res.Code = buz_code.CODE_SERVER_ERROR
+	// 	res.Msg = "server error"
+	// 	return
+	// }
+	// rsp := gin.H{}
+	// if accessToken == "" {
+	// 	rsp["code"] = buzCode
+	// 	rsp["msg"] = ""
+	// 	ctx.JSON(http.StatusOK, rsp)
+	// 	return
+	// }
+	// res.Data = response.SignUpRsp{
+	// 	UID:         uid,
+	// 	AccessToken: accessToken,
+	// }
 	return
 }
 
@@ -155,7 +154,7 @@ func SignInSMS(ctx *gin.Context) (res STDResponse, err error) {
 		res.Msg = err.Error()
 		return
 	}
-	accessToken, uid, err, buzCode := service.SignInSMS(req.Phone, req.Password, req.VerifyCode)
+	accessToken, uid, err, buzCode := service.SignInSMS(req.Phone, req.VerifyCode)
 	if err != nil {
 		res.Code = buz_code.CODE_SERVER_ERROR
 		res.Msg = "server error"

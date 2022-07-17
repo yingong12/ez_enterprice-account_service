@@ -141,15 +141,30 @@ const docTemplate = `{
         },
         "request.SignUpUsernameRequest": {
             "type": "object",
+            "required": [
+                "password",
+                "phone",
+                "username",
+                "verify_code"
+            ],
             "properties": {
                 "password": {
                     "description": "密码，需要包含大小写数字和特殊字符",
                     "type": "string"
                 },
+                "phone": {
+                    "description": "用户名",
+                    "type": "string",
+                    "example": "18391025131"
+                },
                 "username": {
                     "description": "用户名",
                     "type": "string",
                     "example": "zhuyan"
+                },
+                "verify_code": {
+                    "description": "验证码",
+                    "type": "string"
                 }
             }
         },

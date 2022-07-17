@@ -2,7 +2,9 @@
 package service
 
 import (
+	"account_service/library"
 	"account_service/library/env"
+	"account_service/providers"
 	"account_service/repository"
 	"account_service/utils"
 	"encoding/json"
@@ -66,11 +68,12 @@ func send(phone, code string) (_err error) {
 
 func SendVerifyCode(phone string) (ok bool, err error) {
 	code := utils.GenerateVerifyCode()
-	//这里先写redis，因为如果失败了就不发短信。不会造成用户收到短信结果没法使用的bug
 	ok, err = repository.SetSMSEntry(env.GetStringVal("KEY_PREFIX_SMS")+phone, code)
-	if err != nil {
+	//网络错误或者重复写
+	if err != nil || !ok {
 		return
 	}
-	// err = send(phone, code)
+	//发送sms
+	err = library.SendSMS(providers.SMSClient, phone, code)
 	return
 }
