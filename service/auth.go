@@ -81,8 +81,6 @@ func setLoginStatus(uid, appID string) (accessToken string, err error) {
 
 //校验验证码
 func checkVerifyCode(verifyCode, phone string) (ok bool, err error) {
-	ok = true
-	return
 	serverCode, err := repository.GetSMSEntry(env.GetStringVal("KEY_PREFIX_SMS") + phone)
 	//验证码校验不通过
 	if err != nil {
@@ -147,6 +145,7 @@ func SignInSMS(phone, verifyCode string) (accessToken, uid string, err error, bu
 	m := map[string]interface{}{
 		"phone": phone,
 	}
+	//查询用户
 	usr, err := repository.GetUserByKeys(m)
 	if err != nil {
 		if err == gorm.ErrRecordNotFound {
@@ -156,6 +155,7 @@ func SignInSMS(phone, verifyCode string) (accessToken, uid string, err error, bu
 		return
 	}
 	uid = usr.UID
+	//设置登录态
 	accessToken, err = setLoginStatus(uid, usr.AppID)
 	return
 }

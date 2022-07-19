@@ -22,6 +22,6 @@ type SignUpSMSRequest struct {
 }
 type SignInSMSRequest struct {
 	BaseRequest
-	Phone      string `json:"phone" example:"18391025131"`   //用户名
-	VerifyCode string `json:"verify_code" exmample:"637522"` //验证码
+	Phone      string `json:"phone" binding:"required" example:"18391025131"`   //用户名
+	VerifyCode string `json:"verify_code" binding:"required" exmample:"637522"` //验证码
 }

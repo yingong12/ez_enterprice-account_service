@@ -162,7 +162,7 @@ func SignInSMS(ctx *gin.Context) (res STDResponse, err error) {
 	}
 	res.Code = buzCode
 	if accessToken == "" {
-		res.Msg = ""
+		res.Msg = "验证码有误"
 		return
 	}
 	//
