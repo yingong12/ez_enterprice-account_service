@@ -131,7 +131,7 @@ func checkVerifyCode(verifyCode, phone string) (ok bool, err error) {
 // 	return
 // }
 
-func SignInSMS(phone, verifyCode string) (accessToken, uid string, err error, buzCode buz_code.Code) {
+func SignInSMS(phone, verifyCode string) (accessToken, uid, appID string, err error, buzCode buz_code.Code) {
 	//校验验证码
 	ok, err := checkVerifyCode(verifyCode, phone)
 	if err != nil {
@@ -155,6 +155,7 @@ func SignInSMS(phone, verifyCode string) (accessToken, uid string, err error, bu
 		return
 	}
 	uid = usr.UID
+	appID = usr.AppID
 	//设置登录态
 	accessToken, err = setLoginStatus(uid, usr.AppID)
 	return

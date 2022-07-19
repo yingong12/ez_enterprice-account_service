@@ -154,7 +154,7 @@ func SignInSMS(ctx *gin.Context) (res STDResponse, err error) {
 		res.Msg = err.Error()
 		return
 	}
-	accessToken, uid, err, buzCode := service.SignInSMS(req.Phone, req.VerifyCode)
+	accessToken, uid, appID, err, buzCode := service.SignInSMS(req.Phone, req.VerifyCode)
 	if err != nil {
 		res.Code = buz_code.CODE_SERVER_ERROR
 		res.Msg = "server error"
@@ -167,6 +167,7 @@ func SignInSMS(ctx *gin.Context) (res STDResponse, err error) {
 	}
 	//
 	res.Data = response.SignInUsernameRsp{
+		AppID:       appID,
 		UID:         uid,
 		AccessToken: accessToken,
 	}
